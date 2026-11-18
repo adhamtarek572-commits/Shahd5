@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إلى حبيبتي وعمري كله | قصة حبنا</title>
+    <!-- Google Fonts & FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Reem+Kufi:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
+
+        body {
+            background-color: #0b0612;
+            color: #fff;
+            overflow-x: hidden;
+            min-height: 100vh;
+            perspective: 1000px;
+        }
+
+        /* Animated Background Particles / Hearts */
+        .bg-hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 71, 87, 0.25);
+            animation: floatUp 8s infinite linear;
+            font-size: 22px;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(105vh) scale(0.5) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.8;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.3) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* --- LOGIN SCREEN --- */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #13072e 0%, #2b0c3f 50%, #0b0612 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .login-card {
+            background: rgba(30, 15, 50, 0.85);
+            backdrop-filter: blur(25px);
+            border: 1px solid rgba(255, 105, 180, 0.4);
+            padding: 40px;
+            border-radius: 35px;
+            text-align: center;
+            width: 90%;
+            max-width: 440px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(255, 71, 87, 0.3);
+            transform-style: preserve-3d;
+            animation: cardFloat 4s ease-in-out infinite;
+        }
+
+        @keyframes cardFloat {
+            0%, 100% { transform: translateY(0) rotateX(0deg); }
+            50% { transform: translateY(-10px) rotateX(5deg); }
+        }
+
+        .login-card h2 {
+            font-family: 'Reem Kufi', sans-serif;
+            color: #ff6b81;
+            font-size: 30px;
+            margin-bottom: 15px;
+            text-shadow: 0 0 20px rgba(255, 107, 129, 0.6);
+        }
+
+        .login-card p {
+            color: #d1d1d1;
+            font-size: 15px;
+            margin-bottom: 25px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(20, 10, 35, 0.95);
+            border: 2px solid rgba(255, 107, 129, 0.5);
+            border-radius: 18px;
+            color: #fff;
+            font-size: 18px;
+            text-align: center;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: #ff4757;
+            box-shadow: 0 0 25px rgba(255, 71, 87, 0.5);
+        }
+
+        .login-btn {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            padding: 16px;
+            border-radius: 18px;
+            font-size: 19px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px rgba(255, 71, 87, 0.4);
+        }
+
+        .login-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 15px 35px rgba(255, 71, 87, 0.7);
+        }
+
+        .error-msg {
+            color: #ff4757;
+            font-size: 14px;
+            margin-top: 12px;
+            display: none;
+        }
+
+        /* --- MAIN WEBSITE --- */
+        #main-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 1s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 20px 30px;
+        }
+
+        header h1 {
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 48px;
+            background: linear-gradient(45deg, #ff6b81, #ff4757, #ffa502);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+            text-shadow: 0 10px 30px rgba(255, 71, 87, 0.3);
+        }
+
+        header p {
+            color: #b2bec3;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Timer Section */
+        .timer-section {
+            background: rgba(25, 12, 45, 0.65);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 107, 129, 0.3);
+            border-radius: 30px;
+            padding: 35px;
+            text-align: center;
+            margin-bottom: 45px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+        }
+
+        .timer-section h3 {
+            color: #ff6b81;
+            font-size: 24px;
+            margin-bottom: 25px;
+            font-family: 'Reem Kufi', sans-serif;
+        }
+
+        .timer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 15px;
+        }
+
+        .timer-box {
+            background: rgba(15, 8, 28, 0.85);
+            border: 1px solid rgba(255, 71, 87, 0.35);
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: inset 0 0 15px rgba(255, 71, 87, 0.1);
+        }
+
+        .timer-box span {
+            display: block;
+            font-size: 32px;
+            font-weight: 900;
+            color: #ff4757;
+            text-shadow: 0 0 10px rgba(255, 71, 87, 0.4);
+        }
+
+        .timer-box label {
+            font-size: 14px;
+            color: #b2bec3;
+        }
+
+        /* Gallery 3D Section */
+        .gallery-section {
+            margin-bottom: 50px;
+        }
+
+        .gallery-section h2 {
+            text-align: center;
+            font-family: 'Reem Kufi', sans-serif;
+            font-size: 34px;
+            color: #ff6b81;
+            margin-bottom: 35px;
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 30px;
+        }
+
+        .gallery-item {
+            background: rgba(25, 12, 45, 0.75);
+            border-radius: 25px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 107, 129, 0.3);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            transform-style: preserve-3d;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-12px) scale(1.02) rotateX(4deg);
+            box-shadow: 0 30px 60px rgba(255, 71, 87, 0.4);
+        }
+
+        .gallery-item img, .gallery-item video {
+            width: 100%;
+            height: 340px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .gallery-caption {
+            padding: 18px;
+            text-align: center;
+            font-size: 16px;
+            color: #ff9ff3;
+            font-weight: 600;
+        }
+
+        /* Love Message Interactive Button & Modal */
+        .message-section {
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .open-msg-btn {
+            background: linear-gradient(135deg, #ff6b81, #ff4757);
+            color: white;
+            border: none;
+            padding: 20px 45px;
+            font-size: 22px;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 12px 35px rgba(255, 71, 87, 0.6);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            font-family: 'Reem Kufi', sans-serif;
+        }
+
+        .open-msg-btn:hover {
+            transform: scale(1.06);
+            box-shadow: 0 18px 45px rgba(255, 71, 87, 0.9);
+        }
+
+        /* Modal Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 2, 10, 0.88);
+            backdrop-filter: blur(12px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 10000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-card {
+            background: linear-gradient(145deg, #220f3d, #120720);
+            border: 2px solid rgba(255, 107, 129, 0.5);
+            width: 90%;
+            max-width: 680px;
+            max-height: 85vh;
+            border-radius: 35px;
+            padding: 45px;
+            position: relative;
+            overflow-y: auto;
+            box-shadow: 0 30px 70px rgba(0,0,0,0.9), 0 0 50px rgba(255, 71, 87, 0.4);
+            transform: scale(0.8);
+            transition: transform 0.4s ease;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: scale(1);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            background: rgba(255, 71, 87, 0.25);
+            border: none;
+            color: #ff4757;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+
+        .close-modal:hover {
+            background: #ff4757;
+            color: white;
+        }
+
+        .modal-card h2 {
+            font-family: 'Reem Kufi', sans-serif;
+            color: #ff6b81;
+            font-size: 32px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .modal-card .message-body {
+            color: #f1f2f6;
+            font-size: 18px;
+            line-height: 2.3;
+            text-align: justify;
+        }
+
+        footer {
+            text-align: center;
+            padding: 35px;
+            color: #718093;
+            font-size: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background Hearts Animation -->
+    <div class="bg-hearts" id="bgHearts"></div>
+
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <div class="login-card">
+            <h2>مرحباً بكِ في قلبي 💖</h2>
+            <p>أدخلي كلمة المرور لتفتحي باب قلبي وتعرفي كم أحبك...</p>
+            <div class="input-group">
+                <input type="password" id="password-input" placeholder="اكتبي الباسورد هنا (أنت عمري)...">
+            </div>
+            <button class="login-btn" onclick="checkPassword()">دخول إلى قلبي ✨</button>
+            <div class="error-msg" id="error-msg">كلمة المرور غير صحيحة، جربي تكتبي: أنت عمري 🥺</div>
+        </div>
+    </div>
+
+    <!-- Main Website Content -->
+    <div id="main-content">
+        <header>
+            <h1>يا حلوتي الحلوة 🎶</h1>
+            <p>قصة حبنا التي لا تنتهي.. وبداية أجمل حكاية في عمري</p>
+        </header>
+
+        <div class="container">
+            <!-- Timer Section -->
+            <div class="timer-section">
+                <h3>عمر حبنا معاً منذ 1 نوفمبر 2026 ❤️</h3>
+                <div class="timer-grid">
+                    <div class="timer-box">
+                        <span id="days">0</span>
+                        <label>يوم</label>
+                    </div>
+                    <div class="timer-box">
+                        <span id="hours">0</span>
+                        <label>ساعة</label>
+                    </div>
+                    <div class="timer-box">
+                        <span id="minutes">0</span>
+                        <label>دقيقة</label>
+                    </div>
+                    <div class="timer-box">
+                        <span id="seconds">0</span>
+                        <label>ثانية</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3D Gallery Section -->
+            <div class="gallery-section">
+                <h2>ذكرياتنا وأجمل اللحظات ✨</h2>
+                <div class="gallery-grid">
+                    <div class="gallery-item">
+                        <img src="C3BA7504-B77A-4358-A90F-E88917C98AD6.png" alt="ورد وخاتم الحب" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80';">
+                        <div class="gallery-caption">رمز حبنا الخالد 🌹</div>
+                    </div>
+                    <div class="gallery-item">
+                        <img src="IMG_6325.jpeg" alt="حلوتي بالسماعات" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=600&q=80';">
+                        <div class="gallery-caption">أجمل من سمعت وأجمل من رأت عيني 🥰</div>
+                    </div>
+                    <div class="gallery-item">
+                        <video src="1794424902.379424share.mp4" controls autoplay muted loop playsinline></video>
+                        <div class="gallery-caption">فيديو ذكرياتنا الساحرة 🎥❤️</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Love Message Trigger Button -->
+            <div class="message-section">
+                <button class="open-msg-btn" onclick="openModal()">
+                    <i class="fa-solid fa-envelope-open-text"></i> اضغطي هنا لتقرئي رسالة من قلبي 💌
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            تم الحفر والإنشاء خصيصاً لأجل أغلى ما أملك في الوجود • 2026
+        </footer>
+    </div>
+
+    <!-- Long Love Message Modal -->
+    <div class="modal-overlay" id="msgModal" onclick="closeModalOutside(event)">
+        <div class="modal-card">
+            <button class="close-modal" onclick="closeModal()"><i class="fa-solid fa-xmark"></i></button>
+            <h2>إلى حب حياتي ونبض قلبي.. 🤍</h2>
+            <div class="message-body">
+                حبيبتي الغالية، يا أجمل صدفة وأعظم نعم حياتي.. من يوم 1 نوفمبر 2026، وحياتي اتحولت تماماً وبقت مليانة نور وفرحة وسعادة ما تتصفش بكلمات.<br><br>
+                أنا بحبك بكل تفاصيلك، بصوتك، بضحكتك، برقتك، وبكل حاجة فيكي. أنتي مش بس حبيبتي، أنتي بنتي وصاحبتي وكل دنيتي اللي بلقى معاها الأمان والراحة. كل ثانية بتعدي وأنا معاكي بتخليني أتأكد إن ربنا أنعم عليا بأغلى وأطيب قلب في الكون.<br><br>
+                أنا آسف لو في يوم قصرت معاكي، وبوعدك إني أكون دايماً السند والظهر اللي تعتمدي عليه في كل خطوة، هفضل أحبك وأعشقك لحد آخر يوم في عمري. أنتي ملكتي قلبي وعقلي، وربنا يخليكي ليا وما يحرمنيش منك أبداً يا كل حياتي. بحبك بجنون! ❤️✨
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Player: Amir Khattab - Ya Helwaty -->
+    <audio id="bg-audio" loop>
+        <source src="https://cdns.store/download/music/arabic/Amir-Khattab-Ya-Helwaty.mp3" type="audio/mp3">
+        <source src="https://www.bensound.com/bensound-music/bensound-tenderness.mp3" type="audio/mp3">
+    </audio>
+
+    <script>
+        // Floating Hearts Generator
+        const bgHearts = document.getElementById('bgHearts');
+        setInterval(() => {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 5 + 5) + 's';
+            heart.style.fontSize = (Math.random() * 15 + 18) + 'px';
+            bgHearts.appendChild(heart);
+            setTimeout(() => heart.remove(), 8000);
+        }, 350);
+
+        // Password Verification with flexible logic (supports both 'أنت عمري' and 'انت عمري' with or without extra spaces/case)
+        function checkPassword() {
+            const rawInput = document.getElementById('password-input').value;
+            // Clean input: trim and normalize spaces and hamza
+            const input = rawInput.trim().replace(/[آأإ]/g, 'ا');
+            const errorMsg = document.getElementById('error-msg');
+            const loginScreen = document.getElementById('login-screen');
+            const mainContent = document.getElementById('main-content');
+            const audio = document.getElementById('bg-audio');
+
+            // Accepted variants: "انت عمري", "أنت عمري", etc.
+            const cleanTarget1 = "انت عمري";
+            const cleanTarget2 = "أنت عمري".replace(/[آأإ]/g, 'ا');
+            const normalizedInput = input.replace(/[آأإ]/g, 'ا');
+
+            if (normalizedInput === cleanTarget1 || normalizedInput === cleanTarget2 || rawInput.trim() === 'أنت عمري' || rawInput.trim() === 'انت عمري') {
+                loginScreen.style.opacity = '0';
+                loginScreen.style.transform = 'scale(1.1)';
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    mainContent.style.display = 'block';
+                    setTimeout(() => mainContent.style.opacity = '1', 50);
+                    
+                    // Play Audio
+                    audio.play().catch(e => console.log("Audio autoplay restricted:", e));
+                }, 800);
+            } else {
+                errorMsg.style.display = 'block';
+                document.getElementById('password-input').style.borderColor = '#ff4757';
+            }
+        }
+
+        // Enter key support for login
+        document.getElementById('password-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPassword();
+            }
+        });
+
+        // Relationship Timer (Starts 1/11/2026)
+        const startDate = new Date('2026-11-01T00:00:00');
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+
+            if (diff > 0) {
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+                const minutes = Math.floor((diff / 1000 / 60) % 60);
+                const seconds = Math.floor((diff / 1000) % 60);
+
+                document.getElementById('days').innerText = days;
+                document.getElementById('hours').innerText = hours;
+                document.getElementById('minutes').innerText = minutes;
+                document.getElementById('seconds').innerText = seconds;
+            }
+        }
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // Modal Functions
+        function openModal() {
+            document.getElementById('msgModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('msgModal').classList.remove('active');
+        }
+
+        function closeModalOutside(event) {
+            if (event.target.id === 'msgModal') {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
